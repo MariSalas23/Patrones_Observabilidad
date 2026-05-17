@@ -340,7 +340,7 @@ Por lo tanto, el `db-service` presenta un mayor consumo de memoria. Esto ocurre 
 
 ### Evidencia food-service
 
-![Resumen db-service insertar](docs/evidencias/memoria-comidas.png)
+![Resumen db-service insertar](docs/evidencias/memoria-comidas.jpeg)
 
 
 ## 5.8. ¿Cuál endpoint tiene más errores?
