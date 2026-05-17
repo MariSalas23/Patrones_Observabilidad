@@ -45,13 +45,7 @@ El flujo principal implementado es el siguiente:
 
 # 3. Flujo distribuido de una petición
 
-Usuario
-   ↓
-food-service
-   ↓
-db-service
-   ↓
-PostgreSQL
+Usuario -> food-service -> db-service -> PostgreSQL
 
  # 4. Estructura del proyecto
 
