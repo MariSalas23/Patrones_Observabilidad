@@ -349,7 +349,6 @@ Los endpoints monitoreados fueron:
 
 ```http
 GET /comidas
-POST /insertar
 GET /db/comidas
 POST /db/insertar
 ```
