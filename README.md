@@ -301,22 +301,47 @@ Average error rate: 0%
 
 ![Resumen db-service insertar](docs/evidencias/newrelic/db-service/newrelic_db_insertar_summary.jpeg)
 
----
-
 ## 5.7. ¿Cuál servicio consume más memoria?
 
-El servicio con mayor carga y utilización observada fue `food-service`, debido a que:
+El servicio que consume más memoria es `db-service`.
 
-* Recibe las solicitudes HTTP externas.
-* Procesa la lógica principal.
-* Realiza llamadas a otros microservicios.
-* Maneja propagación de contexto y spans distribuidos.
+Esto se verificó utilizando el endpoint de métricas de Spring Boot Actuator:
 
-El monitoreo de memoria puede visualizarse directamente desde New Relic Infrastructure o mediante Docker Stats.
+```http
+/actuator/metrics/jvm.memory.used
+```
 
-Las evidencias adjuntas en este README se enfocan en trazas, throughput, latencia, percentiles y logs. Para responder con precisión el consumo de memoria se debe complementar con una captura de New Relic Infrastructure o con `docker stats`, donde se comparen los contenedores `food-service` y `db-service`.
+Los valores obtenidos fueron:
 
----
+### db-service
+
+```plaintext
+196608504 bytes
+≈ 196 MB
+```
+
+### food-service
+
+```plaintext
+147724416 bytes
+≈ 148 MB
+```
+
+Por lo tanto, el `db-service` presenta un mayor consumo de memoria. Esto ocurre debido a que:
+
+* Mantiene la conexión activa con PostgreSQL.
+* Ejecuta consultas JDBC.
+* Procesa objetos provenientes de la base de datos.
+* Maneja operaciones SQL instrumentadas con OpenTelemetry.
+
+### Evidencia db-service
+
+![Resumen db-service comidas](docs/evidencias/memoria-insertar.jpg)
+
+### Evidencia food-service
+
+![Resumen db-service insertar](docs/evidencias/memoria-comidas.jpg)
+
 
 ## 5.8. ¿Cuál endpoint tiene más errores?
 
