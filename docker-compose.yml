@@ -1,0 +1,56 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name: postgres-food
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fooddb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+      - "4317:4317"
+      - "4318:4318"
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector
+
+    command: ["--config=/etc/otelcol-contrib/config.yaml"]
+
+    volumes:
+      - ./otel-collector/otel-collector-config.yml:/etc/otelcol-contrib/config.yaml
+
+    ports:
+      - "8889:8889"
+
+    depends_on:
+      - jaeger
+
+  food-service:
+    build: ./food-service
+    container_name: food-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db-service
+      - otel-collector
+
+  db-service:
+    build: ./db-service
+    container_name: db-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - otel-collector
